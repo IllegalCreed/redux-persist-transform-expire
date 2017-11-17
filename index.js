@@ -16,18 +16,13 @@ export default function createExpirationTransform(expireDatas) {
   let stateMap = new Map();
   const inbound = (state, key) => {
     if ((state || typeof state === 'object') && expireDatas.hasOwnProperty(key)) {
-      if (stateMap.has(key)) {
-        if (typeof state.toJS === 'function') {
-          let newState = state.toJS();
-          newState.expireDate = new Date((new Date()).getTime() + expireDatas[key].expireSpan);
-          return newState;
-        }
-        else {
-          state.expireDate = new Date((new Date()).getTime() + expireDatas[key].expireSpan);
-        }
+      if (typeof state.toJS === 'function') {
+        let newState = state.toJS();
+        newState.expireDate = new Date((new Date()).getTime() + expireDatas[key].expireSpan);
+        return newState;
       }
       else {
-        stateMap.set(key, true);
+        state.expireDate = new Date((new Date()).getTime() + expireDatas[key].expireSpan);
       }
     }
     return state;
